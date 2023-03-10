@@ -12,7 +12,7 @@ const {
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутренняя ошибка сервера' }));
+    .catch(() => res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -23,7 +23,7 @@ module.exports.createCard = (req, res) => {
       if (error.name === 'ValidationError') {
         res.status(ERROR_BAD_REQUEST).send({ message: 'Переданы некорректные данные пользователя' });
       } else {
-        res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутрення ошибка сервера' });
+        res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -45,7 +45,7 @@ module.exports.deleteCard = (req, res) => {
           message: 'Пользователь с указанным id не найден',
         });
       } else {
-        res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутрення ошибка сервера' });
+        res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -68,7 +68,7 @@ module.exports.likeCard = (req, res) => {
           message: 'Пользователь с указанным id не найден',
         });
       } else {
-        res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутрення ошибка сервера' });
+        res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -91,7 +91,7 @@ module.exports.dislikeCard = (req, res) => {
           message: 'Пользователь с указанным id не найден',
         });
       } else {
-        res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутрення ошибка сервера' });
+        res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };

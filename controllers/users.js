@@ -35,7 +35,7 @@ module.exports.getUserId = (req, res) => {
           message: 'Пользователь с указанным id не найден',
         });
       } else {
-        res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутрення ошибка сервера' });
+        res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -48,7 +48,7 @@ module.exports.createUser = (req, res) => {
       if (error.name === 'ValidationError') {
         res.status(ERROR_BAD_REQUEST).send({ message: 'Переданы некорректные данные пользователя' });
       } else {
-        res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутрення ошибка сервера' });
+        res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -68,7 +68,7 @@ module.exports.updateUser = (req, res) => {
           message: 'Пользователь с указанным id не найден',
         });
       } else {
-        res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутрення ошибка сервера' });
+        res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -88,7 +88,7 @@ module.exports.updateAvatar = (req, res) => {
           message: 'Пользователь с указанным id не найден',
         });
       } else {
-        res.status(ERROR_INTERNAL_SERVER).send({ message: 'Внутрення ошибка сервера' });
+        res.status(ERROR_INTERNAL_SERVER).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };

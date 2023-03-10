@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+// регулярное выражение для url
+const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+const regex = new RegExp(expression);
+
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -10,6 +14,10 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: (v) => regex.test(v),
+      message: 'Текст ошибки',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
