@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Card = require('../models/card');
 const ErrorNotFound = require('../utils/ErrorNotFound');
 const ErrBadRequest = require('../utils/ErrBadRequest');
-const ForBiddenErr = require('../utils/ErrBadRequest');
+const ForBiddenErr = require('../utils/ForBiddenErr');
 
 const {
   STATUS_CREATED,
@@ -31,18 +31,17 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   Card.findById(cardId)
     .orFail(() => {
       throw new ErrorNotFound('Пользователь не найден');
     })
     .then((card) => {
       const ownerId = card.owner.id;
-      if (ownerId !== userId) {
+      if (String(ownerId) !== userId) {
         next(new ForBiddenErr('У вас нет доступа к удалению этой карточки'));
       } else {
-        card.remove();
-        res.send({ data: card });
+        card.deleteOne().then(() => res.status(200)).send({ data: card });
       }
     })
     .catch((error) => {
