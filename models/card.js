@@ -1,8 +1,6 @@
+/* eslint-disable no-unused-vars */
 const mongoose = require('mongoose');
-
-// регулярное выражение для url
-const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
-const regex = new RegExp(expression);
+const validator = require('validator');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -15,8 +13,8 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => regex.test(v),
-      message: 'Текст ошибки',
+      validator: (v) => validator.isURL(v),
+      message: 'Введите корректный адрес',
     },
   },
   owner: {
@@ -25,10 +23,12 @@ const cardSchema = new mongoose.Schema({
     ref: 'user',
   },
   likes: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
-    }],
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+      },
+    ],
     default: [],
   },
   createdAt: {

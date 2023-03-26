@@ -1,30 +1,60 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { Joi, celebrate, errors } = require('celebrate');
 const router = require('./routes/index');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+const patternValid = require('./utils/patternValid');
 
 const app = express();
 const { PORT = 3000 } = process.env;
 
-// подключаемся к серверу mongo - mongodb://localhost:27017/mestodb
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb ')
+// подключаемся к серверу mongo
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
   .then(() => {
-    console.log('Connected! Yyyepp!');
+    // eslint-disable-next-line no-console
+    console.log('Connected');
   })
   .catch((err) => {
-    console.log('Error on database');
-    console.log(err);
+    // eslint-disable-next-line no-console
+    console.error(err);
   });
 
-app.use(bodyParser.json());
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6409b0eb1e9e0d50e2f004f7',
-  };
-  next();
-});
+// подключаем мидлвары, роуты и всё остальное...
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
+
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(patternValid),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
+app.use(auth);
 app.use('/', router);
 
+app.use(errors());
+app.use((err, req, res, next) => {
+  const { statusCode = 500 } = err;
+  if (statusCode === 500) {
+    res.status(500).send({ message: 'Внутренняя ошибка сервере' });
+    next();
+  } else {
+    res.status(statusCode).send({ message: err.message });
+    next();
+  }
+});
 app.listen(PORT, () => {
-  console.log(`ALL GOOD. Port ${PORT} is working`);
+  // eslint-disable-next-line no-console
+  console.log(`Listing on port ${PORT}`);
 });
