@@ -37,11 +37,11 @@ module.exports.deleteCard = (req, res, next) => {
       throw new ErrorNotFound('Пользователь не найден');
     })
     .then((card) => {
-      const ownerId = card.owner.id;
+      const ownerId = card.owner;
       if (String(ownerId) !== userId) {
         next(new ForBiddenErr('У вас нет доступа к удалению этой карточки'));
       } else {
-        card.deleteOne().then(() => res.status(200)).send({ data: card });
+        card.deleteOne().then(() => res.status(200).send({ data: card }));
       }
     })
     .catch((error) => {
