@@ -11,7 +11,6 @@ const ConflictUserErr = require('../utils/ConflictUserErr');
 const ErrBadRequest = require('../utils/ErrBadRequest');
 
 const {
-  STATUS_CREATED,
   STATUS_OK,
 } = require('../utils/errors');
 
@@ -47,7 +46,8 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then(() => res.status(STATUS_CREATED).send({ message: `Создан пользователь ${name}, ${about}, ${avatar}, ${email}` }))
+    // eslint-disable-next-line object-curly-newline
+    .then(() => res.send({ name, about, avatar, email }))
     .catch((error) => {
       if (error.code === 11000) {
         next(new ConflictUserErr('Аккаунт с данным email зарегистрирован'));
